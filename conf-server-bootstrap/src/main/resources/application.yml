@@ -1,0 +1,67 @@
+server:
+  port: 8818
+
+spring:
+  datasource:
+    druid:
+      url: "jdbc:mysql://localhost:3306/liconf"
+      min-evictable-idle-time-millis: 300000
+      time-between-eviction-runs-millis: 60000
+      removeAbandoned: true
+      validationQuery: select 1
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root
+      connection-properties: "useUnicode: true;characterEncoding: UTF8;rewriteBatchedStatements: true;socketTimeout: 60000;autoReconnectForPools: true"
+      initial-size: 15
+      max-idle: 5
+      min-idle: 1
+      max-wait: 18000
+      max-active: 20
+      remove-abandoned-timeout-millis: 300
+
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+
+
+  aop:
+    proxy-target-class: true
+  mvc:
+    favicon:
+      enabled: false
+    async:
+      request-timeout: -1
+  main:
+    banner-mode: "off"
+  hazelcast:
+    config: classpath:hazelcast/hazelcast.xml
+  cache:
+    type: none
+
+---
+spring:
+  profiles: dev
+  datasource:
+    druid:
+      username: root
+      password: root
+      url: "jdbc:mysql://localhost:3306/liconf"
+
+---
+spring:
+  profiles: test
+  datasource:
+    druid:
+      username: root
+      password: root
+      url: "jdbc:mysql://localhost:3306/liconf"
+
+---
+spring:
+  profiles: prod
+  datasource:
+    druid:
+      username: root
+      password: root
+      url: "jdbc:mysql://localhost:3306/liconf"

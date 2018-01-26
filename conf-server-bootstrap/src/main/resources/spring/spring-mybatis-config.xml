@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <typeAliases>
+        <typeAlias type="com.jiaxy.conf.server.domain.ConfInfo" alias="ConfInfo"/>
+    </typeAliases>
+    <typeHandlers>
+        <typeHandler javaType="Boolean" jdbcType="CHAR"
+                     handler="org.apache.ibatis.type.BooleanTypeHandler"/>
+    </typeHandlers>
+</configuration>

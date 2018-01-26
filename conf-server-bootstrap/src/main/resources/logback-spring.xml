@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="LOG_FILE" value="logs/conf-server/conf.log"/>
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+        <logger name="com.jiaxy.conf.server.dao" level="info" />
+        <appender name="ROLLING-FILE"
+                  class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <file>${LOG_FILE}</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%i.gz</fileNamePattern>
+                <minIndex>1</minIndex>
+                <maxIndex>20</maxIndex>
+            </rollingPolicy>
+            <triggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <MaxFileSize>100MB</MaxFileSize>
+            </triggeringPolicy>
+
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ROLLING-FILE"/>
+        </root>
+
+</configuration>

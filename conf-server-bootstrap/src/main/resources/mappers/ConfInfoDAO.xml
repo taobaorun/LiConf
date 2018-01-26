@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiaxy.conf.server.dao.ConfInfoDAO">
+    <resultMap type="ConfInfo" id="_resultMap">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="conf_owner" property="confOwner"/>
+        <result column="conf_key" property="confKey"/>
+        <result column="conf_value" property="confValue"/>
+    </resultMap>
+
+    <sql id="whereSQL">
+        <where>
+            <if test="confOwner != null">
+                and conf_owner = #{confOwner}
+            </if>
+            <if test="path != null and path !=''">
+                and path = #{path}
+            </if>
+            <if test="confKey != null and confKey !=''">
+                and conf_key = #{confKey}
+            </if>
+            <if test="version != null and version != -1">
+                and version = #{version}
+            </if>
+        </where>
+    </sql>
+
+
+    <insert id="insert" parameterType="ConfInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        conf_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            `conf_owner`,
+            `path`,
+            `conf_key`,
+            `conf_value`,
+            `version`,
+            `timestamp`
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{confOwner},
+            #{path},
+            #{confKey},
+            #{confValue},
+            #{version},
+            #{timeStamp}
+        </trim>
+    </insert>
+
+    <delete id="delete">
+        DELETE
+        FROM
+        conf_config
+        WHERE conf_owner= #{confOwner}
+        AND path= #{path}
+        AND conf_key = #{confKey}
+    </delete>
+
+    <delete id="deletePath">
+        DELETE
+        FROM
+        conf_config
+        WHERE conf_owner= #{confOwner}
+        AND path= #{path}
+    </delete>
+
+    <select id="getByPath" resultMap="_resultMap">
+        select
+        *
+        from (
+          select * from conf_config
+          where conf_owner= #{confOwner}
+          and path = #{path}
+          order by `version` desc
+        )
+        c
+        group by c.conf_key
+
+    </select>
+
+    <select id="getByPathWithFuzzyKey" resultMap="_resultMap">
+        select
+        *
+        from (
+          select * from conf_config
+          where conf_owner= #{confOwner}
+          and path = #{path}
+          and conf_key like "%"#{fuzzyKey}"%"
+          order by `version` desc
+        )
+        c
+        group by c.conf_key
+
+    </select>
+
+
+    <select id="getByKey" resultMap="_resultMap">
+        select
+        *
+        from
+        conf_config
+        <include refid="whereSQL"/>
+        order by `version` DESC
+        limit 1
+    </select>
+
+
+    <update id="updatePath">
+		update conf_config
+            set  path= #{path}
+		WHERE path= #{path}
+	</update>
+
+    <update id="updateConfValue">
+        update conf_config
+        <set>
+            <if test="newVersion != null">
+                version = #{newVersion},
+            </if>
+            conf_value= #{confValue},
+            `timestamp` = #{timeStamp}
+        </set>
+        WHERE path= #{path}
+        and conf_key= #{confKey}
+        AND version = #{currentVersion}
+    </update>
+
+
+    <select id="listByIface" resultMap="_resultMap">
+        select * from ledo_client where interface_name=#{interfaceName} AND client_status IN (0, 1)
+    </select>
+</mapper>
